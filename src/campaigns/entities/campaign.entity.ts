@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Submission } from './submission.entity';
 
 @Entity('campaigns')
 export class Campaign {
@@ -11,7 +12,7 @@ export class Campaign {
   @Column('text')
   description: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   requirements: string;
 
   @Column()
@@ -23,4 +24,7 @@ export class Campaign {
     default: 'ACTIVE'
   })
   status: string;
+
+  @OneToMany(() => Submission, submission => submission.campaign)
+  submissions: Submission[];
 }

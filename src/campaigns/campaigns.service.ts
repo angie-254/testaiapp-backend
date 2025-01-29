@@ -34,15 +34,31 @@ export class CampaignsService {
 
   async findOne(id: number) {
     try {
-      const campaign = await this.campaignsRepository.findOne({ 
-        where: { id } 
+      const campaign = await this.campaignsRepository.findOne({
+        where: { id },
+        relations: {
+          submissions: true
+        },
+        order: {
+          submissions: {
+            submittedAt: 'DESC'
+          }
+        }
       });
 
       if (!campaign) {
         throw new NotFoundException(`Campaign #${id} not found`);
       }
 
-      return campaign;
+      return {
+        ...campaign,
+        submissions: campaign.submissions.map(submission => ({
+          id: submission.id,
+          contentUrl: submission.contentUrl,
+          status: submission.status,
+          submittedAt: submission.submittedAt
+        }))
+      };
     } catch (error) {
       console.error('Error fetching campaign:', error);
       throw error;

@@ -1,17 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Campaign } from './campaign.entity';
 
 @Entity('submissions')
 export class Submission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'user_id' })
   userId: number;
 
-  @Column()
+  @Column({ name: 'campaign_id' })
   campaignId: number;
 
-  @Column()
+  @Column({ name: 'content_url' })
   contentUrl: string;
 
   @Column({
@@ -21,6 +22,10 @@ export class Submission {
   })
   status: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  submittedAt: Date;
+
+  @ManyToOne(() => Campaign)
+  @JoinColumn({ name: 'campaign_id' })
+  campaign: Campaign;
 }
